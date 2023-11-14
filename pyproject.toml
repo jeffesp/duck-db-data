@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 uvicorn = "^0.24.0.post1"
 fastapi = "^0.104.1"
+duckdb = "^0.9.2"
 
 
 [build-system]
