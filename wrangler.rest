@@ -1,0 +1,52 @@
+
+@baseUrl = http://localhost:9933
+
+# @name register
+POST {{baseUrl}}/register-dataset HTTP/1.1
+content-type: application/json
+
+{
+    "source_type": "parquet",
+    "sources": ["/home/jeffrey/Data/sf-fire.parquet/*.parquet"],
+    "connection_attr": {}
+}
+
+
+### 
+
+@datasetId = {{register.response.body.$.dataset_id}}
+@registerTaskId = {{register.response.body.$.task_id}}
+
+# @name registerStatus
+GET {{baseUrl}}/task-status/{{registerTaskId}} HTTP/1.1
+
+
+###
+
+# @name createSample
+POST {{baseUrl}}/execute-query HTTP/1.1
+Content-Type: application/json
+
+{
+    "dataset_id": "{{datasetId}}",
+    "cache_result": true,
+    "query": "SELECT * FROM \"{{datasetId}}\" USING SAMPLE reservoir(10000 ROWS) REPEATABLE (100)"
+}
+
+###
+@taskId2 = {{createSample.response.body.$.task_id}}
+
+# @name executeStatus
+GET {{baseUrl}}/task-status/{{taskId2}} HTTP/1.1
+
+###
+
+@viewId = {{createSample.response.body.$.view_id}}
+GET {{baseUrl}}/query-results?view_id={{viewId}} HTTP/1.1
+
+###
+
+GET {{baseUrl}}/query-results?view_id={{viewId}}&page_index=1 HTTP/1.1
+
+### 
+GET {{baseUrl}}/query-results?dataset_id={{datasetId}}&page_index=1 HTTP/1.1
