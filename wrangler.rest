@@ -6,8 +6,8 @@ POST {{baseUrl}}/register-dataset HTTP/1.1
 content-type: application/json
 
 {
-    "source_type": "parquet",
-    "sources": ["/home/jeffrey/Data/sf-fire.parquet/*.parquet"],
+    "source_type": "csv",
+    "sources": ["s3://data-mesh-pipelines-test/datamesh/10k_diabetes.csv"],
     "connection_attr": {}
 }
 

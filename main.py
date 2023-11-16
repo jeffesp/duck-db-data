@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import os
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Optional, List
@@ -54,6 +55,7 @@ def format_source(dataset: Dataset):
 
 def process_dataset(task_id: str, dataset_id: str, dataset: Dataset):
     try:
+        breakpoint()
         tasks[task_id] = "processing"
         with get_db() as db:
             # using region as indication that all are present.
@@ -62,6 +64,11 @@ def process_dataset(task_id: str, dataset_id: str, dataset: Dataset):
                 db.sql(f"SET s3_access_key_id='{dataset.connection_attr['s3-access-key']}'")
                 db.sql(f"SET s3_secret_access_key='{dataset.connection_attr['s3-secret']}'")
                 db.sql(f"SET s3_session_token='{dataset.connection_attr['s3-session']}'")
+            elif 'AWS_ACCESS_KEY_ID' in os.environ:
+                db.sql("SET s3_region='us-east-1'")  # DDB seem to require this, not sure why.
+                db.sql(f"SET s3_access_key_id='{os.environ['AWS_ACCESS_KEY_ID']}'")
+                db.sql(f"SET s3_secret_access_key='{os.environ['AWS_SECRET_ACCESS_KEY']}'")
+                db.sql(f"SET s3_session_token='{os.environ.get('AWS_SESSION_TOKEN', None)}'")
             db.sql(f'CREATE TABLE "{dataset_id}" AS SELECT * FROM {format_source(dataset)}')
         datasets[dataset_id] = dataset
         tasks[task_id] = "completed"

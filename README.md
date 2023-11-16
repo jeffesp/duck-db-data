@@ -5,17 +5,25 @@ $ poetry install
 $ poetry run uvicorn main:app --reload --port 9933
 ```
 
-You should see something like this in the terminal:
+I am using VSCode and the REST Client Extension to test this. If you don"t use VSCode, there is a test.sh file with some cURL commands that you could adapt to this.
+
+To access a file on S3, you can either set the following environment variables:
 
 ```
-INFO:     Will watch for changes in these directories: ['/home/jeffrey/Code/duck-db-data']
-INFO:     Uvicorn running on http://127.0.0.1:9933 (Press CTRL+C to quit)
-INFO:     Started reloader process [2533480] using StatReload
-INFO:     Started server process [2533534]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+export AWS_ACCESS_KEY_ID="<value>"
+export AWS_SECRET_ACCESS_KEY="<value>"
+export AWS_SESSION_TOKEN="<value>"
 ```
 
-I am using VSCode and the REST Client Extension to test this. If you don't use VSCode, there is a test.sh file with some cURL commands that you could adapt to this.
+or you can provide the following as the "connection_attr" property in the register request:
+
+```
+{
+    "s3-region": "<value>",
+    "s3-access-key": "<value>",
+    "s3-secret": "<value>",
+    "s3-session": "<value>"
+}
+```
 
 None of this code is intended to be something that is run in any production type environment. It can serve as an example of what we might do.
