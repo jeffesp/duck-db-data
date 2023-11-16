@@ -55,7 +55,6 @@ def format_source(dataset: Dataset):
 
 def process_dataset(task_id: str, dataset_id: str, dataset: Dataset):
     try:
-        breakpoint()
         tasks[task_id] = "processing"
         with get_db() as db:
             # using region as indication that all are present.
@@ -131,12 +130,20 @@ def query_results(
         raise HTTPException(status_code=400, detail="View ID or Dataset ID required")
 
     with get_db() as db:
+        db.execute(f"CALL pragma_table_info('{id}')")
+        columns = db.fetchall()
         db.execute(f'SELECT * FROM "{id}" OFFSET {page_index * page_size} LIMIT {page_size}')
         data = db.fetchall()
         db.execute(f'SELECT count(*) FROM "{id}"')
         count = db.fetchone()
 
-    return {"data": data, "totalCount": count, "pageIndex": page_index, "pageSize": page_size}
+    return {
+        "data": data,
+        "columns": columns,
+        "totalCount": count,
+        "pageIndex": page_index,
+        "pageSize": page_size,
+    }
 
 
 @app.get("/task-status/{task_id}")
