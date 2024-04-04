@@ -32,6 +32,6 @@ None of this code is intended to be something that is run in any production type
 
 What does this look like?
 
-https://github.com/jeffesp/duck-db-data/blob/35a56cb0dec3fbfff32e66d48a8a93a3909819d6/main.py#L78-L89
+https://github.com/jeffesp/duck-db-data/blob/35a56cb0dec3fbfff32e66d48a8a93a3909819d6/main.py
 
-If I added commentary, would it make sense?
+If I added commentary, would it make sense? What about no line numbers?
